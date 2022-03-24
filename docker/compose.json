@@ -1,0 +1,68 @@
+{
+    "volumes": {
+        "cairisDocumentation": null,
+        "cairisImage": null
+    },
+    "networks": {
+        "cairis": {}
+    },
+    "services": {
+        "cairis-mysql": {
+            "image": "docker.io/mysql:8-debian",
+            "environment": {
+                "MYSQL_ROOT_HOST": "cairis",
+                "MYSQL_ROOT_PASSWORD": "my-secret-pw"
+            },
+            "networks": [
+                "cairis"
+            ],
+            "ports": [
+                "3306:3306"
+            ],
+            "healthcheck": {
+                "test": "/usr/bin/mysql --user=root --password=my-secret-pw  --silent --execute 'SELECT 1;'"
+            }
+        },
+        "cairis": {
+            "environment": [
+                "TZ=America/Sao_Paulo"
+            ],
+            "build": "cairis/",
+            "depends_on": {
+                "cairis-mysql": {
+                    "condition": "service_healthy"
+                }
+            },
+            "volumes": [
+                "cairisDocumentation:/tmpDocker",
+                "cairisImage:/images"
+            ],
+            "networks": [
+                "cairis"
+            ],
+            "ports": [
+                "8000:8000"
+            ],
+            "command": "sh -c 'addAccount.sh yuuyin@protonmail.com mypass yuu; sleep infinity'",
+            "tty": true
+        },
+        "cairis-docs": {
+            "build": "docs/",
+            "depends_on": {
+                "cairis-mysql": {
+                    "condition": "service_healthy"
+                }
+            },
+            "volumes": [
+                "cairisDocumentation:/tmpDocker",
+                "cairisImage:/images"
+            ],
+            "networks": [
+                "cairis"
+            ],
+            "ports": [
+                "5000:5000"
+            ]
+        }
+    }
+}

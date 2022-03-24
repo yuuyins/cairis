@@ -1,4 +1,4 @@
-dbhost = cairis-mysql
+dbhost = cairis
 dbport = 3306
 rpasswd = my-secret-pw
 tmp_dir = /tmpDocker

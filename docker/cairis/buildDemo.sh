@@ -8,14 +8,14 @@ rm -rf $CAIRIS_REPO
 
 git clone http://github.com/cairis-platform/cairis $CAIRIS_REPO
 
-sudo docker stop CAIRIS
-sudo docker stop cairis-mysql
+sudo docker stop cairis
+sudo docker stop mariadb
 sudo docker rm $(sudo docker ps -aq)
 sudo docker rmi $(sudo docker images -q)
 sudo docker volume rm $(docker volume ls)
-sudo docker run --name cairis-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest --thread_stack=512K
+sudo docker run --name mariadb -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest --thread_stack=512K
 sudo docker run --name cairis-docs -d -v cairisDocumentation:/tmpDocker -v cairisImage:/images -t shamalfaily/cairis-docs
-sudo docker run --name CAIRIS -d --link cairis-mysql:mysql --link cairis-docs:docs -P -p 80:8000 --net=bridge -v cairisDocumentation:/tmpDocker -v cairisImage:/images shamalfaily/cairis
+sudo docker run --name cairis -d --link mariadb:mariadb --link cairis-docs:docs -P -p 80:8000 --net=bridge -v cairisDocumentation:/tmpDocker -v cairisImage:/images shamalfaily/cairis
 
 sleep 60
 
