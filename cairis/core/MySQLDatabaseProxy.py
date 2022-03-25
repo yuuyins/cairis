@@ -132,6 +132,9 @@ class MySQLDatabaseProxy:
     host = b.dbHost
     port = b.dbPort
 
+    print("TRY1")
+    print("mysql+mysqldb://" + user + ":" + passwd + "@" + host + ":" + str(port) + "/" + db + "?charset=utf8mb4")
+
     try:
       dbEngine = create_engine('mysql+mysqldb://'+user+':'+passwd+'@'+host+':'+str(port)+'/'+db+'?charset=utf8mb4')
       self.conn = scoped_session(sessionmaker(bind=dbEngine))
@@ -158,9 +161,16 @@ class MySQLDatabaseProxy:
         dbHost = ses_settings['dbHost']
         dbPort = ses_settings['dbPort']
         dbName = ses_settings['dbName']
+
+        print("TRY2")
+        print("mysql+mysqldb://" + dbUser + ":" + dbPasswd + "@" + dbHost + ":" + str(dbPort) + "/" + dbName + "?charset=utf8mb4")
+
         dbEngine = create_engine('mysql+mysqldb://' + dbUser+':' + dbPasswd+'@' + dbHost+':' + str(dbPort)+'/' + dbName + '?charset=utf8mb4')
         self.conn = scoped_session(sessionmaker(bind=dbEngine))
       elif b.runmode == 'desktop':
+        print("TRY2")
+        print("mysql+mysqldb://" + b.dbUser + ":" + b.dbPasswd + "@" + b.dbHost + ":" + str(b.dbPort) + "/" + b.dbName + "?charset=utf8mb4")
+
         dbEngine = create_engine('mysql+mysqldb://' + b.dbUser+':' + b.dbPasswd+'@' + b.dbHost+':' + str(b.dbPort)+'/' + b.dbName + '?charset=utf8mb4')
         self.conn = scoped_session(sessionmaker(bind=dbEngine))
       else:
@@ -4660,6 +4670,9 @@ class MySQLDatabaseProxy:
     dbUser = canonicalDbUser(ses_settings['dbUser'])
     dbName = canonicalDbName(dbUser + '_' + dbName)
     try:
+      print("TRY3")
+      print("mysql+mysqldb://root" + ":" + rPasswd + "@" + dbHost + ":" + str(dbPort))
+
       dbEngine = create_engine('mysql+mysqldb://root'+':'+rPasswd+'@'+dbHost+':'+str(dbPort))
       tmpConn = scoped_session(sessionmaker(bind=dbEngine))
       stmts = ['drop database if exists `' + dbName + '`',
